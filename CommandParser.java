@@ -59,7 +59,7 @@ public class CommandParser {
   private String id1;
   private String idn;
   private String id2;
-  public static String id;
+  public  String id;
   private int integer;
   private Latitude latitude;
   private String string;
@@ -294,9 +294,36 @@ public class CommandParser {
 	    } 
 	        
 	}
+	public void setID(String id) {
+		this.id= id;
+	}
+	public void setID1(String id1) {
+		this.id1=id1;
+	}
+	public void setID2(String id2) {
+		this.id2=id2;
+	}
 	
 	public String getID() {
 		return this.id;
+	}
+	public String getID1() {
+		return this.getID1();
+	}
+	public String getID2() {
+		return this.getID2();
+	}
+	public void setCoordinatesDelta1(CoordinatesDelta d1) {
+		this.coordinates_delta=d1;
+	}
+	public void setCoordinatesDelta2(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
+	}
+	public void setCoordinatesDelta3(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
+	}
+	public void setCoordinatesDelta4(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
 	}
 	public CoordinatesDelta getStartCoordinates() {
 		return this.coordinates_delta1;
@@ -304,19 +331,39 @@ public class CommandParser {
 	public CoordinatesDelta getEndCoordinates() {
 		return this.coordinates_delta2;
 	}
+	public void setWorldCoordinates(CoordinatesWorld cw) {
+		this.coordinates_world=cw;
+	}
 	public CoordinatesWorld getWorldCoordinates() {
 		return this.coordinates_world;
+	}
+	public void setNumber(double num) {
+		this.number=num;
 	}
 	public double getNumber() {
 		return this.number;
 	}
+	public void setPoles(LinkedList p) {
+		this.idpoles=p;
+	}
 	public LinkedList getpoles() {
 		return this.idpoles;
 	}
+	
 	public String getId1() {
 		return this.id1;
+	}
+	public void setIDn(String idn) {
+		this.idn=idn;
 	}
 	public String getIdn() {
 		return idn;
 	}
+	public void setNumber1(double num) {
+		this.number1=num;
+	}
+	public void setNumber2(double num) {
+		this.number2=num;
+	}
 }
+
