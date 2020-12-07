@@ -31,7 +31,7 @@ public class CommandParser
 	private String id, id1, id2;
 	private int number;
 	private String position;
-	private boolean isFacingStartElseEnd;
+	private boolean isClockwise, isUpElseDown, isFacingStartElseEnd;
 	private TrackLocator trackLocator;
 	private CoordinatesWorld coordinates_world;
 	private CoordinatesDelta coordinates_delta1;
@@ -41,19 +41,29 @@ public class CommandParser
 	
 	
 	private String[] command2 = ("DO BRAKE " + id).split(" ");
-	private String[] command6 = ("DO SELECT DRAWBRIDGE " + id + "POSITION (UP | DOWN) ").split(" ");
-	private String[] command7 = ("DO SELECT ROUNDHOUSE " + id + "POSITION " + angle + "( CLOCKWISE | COUNTERCLOCKWISE )").split(" ");
-	private String[] command8 = ("DO SELECT SWITCH " + id + "PATH ( PRIMARY | SECONDARY )").split(" ");
-	private String[] command28 = ("CREATE STOCK CAR " + id + "AS BOX ").split(" ");
-	private String[] command29 = ("CREATE STOCK CAR " + id + "AS CABOOSE ").split(" ");
-	private String[] command30 = ("CREATE STOCK CAR " + id + "AS FLATBED ").split(" ");
-	private String[] command31 = ("CREATE STOCK CAR " + id + "AS PASSENGER ").split(" ");
-	private String[] command32 = ("CREATE STOCK CAR " + id + "AS TANK ").split(" ");
-	private String[] command33 = ("CREATE STOCK CAR " + id + "AS TENDER ").split(" ");
-	private String[] command34 = ("CREATE STOCK ENGINE " + id1 + "AS DIESEL ON TRACK " + id2 + "DISTANCE "  + number + "FROM ( START | END ) FACING ( START | END ) ").split(" ");
-	private String[] command39 = ("CREATE TRACK BRIDGE " + id1 + "REFERENCE " + coordinates_world + " | '$' " + id2 + "DELTA START " + coordinates_delta1 + "END " + coordinates_delta2).split(" ");
+	private String[] command6Up = ("DO SELECT DRAWBRIDGE " + id + " POSITION UP").split(" ");
+	private String[] command6Down = ("DO SELECT DRAWBRIDGE " + id + " POSITION DOWN").split(" ");
+	private String[] command7Clockwise = ("DO SELECT ROUNDHOUSE " + id + " POSITION " + angle + " CLOCKWISE").split(" ");
+	private String[] command7CounterClockwise = ("DO SELECT ROUNDHOUSE " + id + " POSITION " + angle + " COUNTERCLOCKWISE").split(" ");
+	private String[] command8Primary = ("DO SELECT SWITCH " + id + " PATH PRIMARY").split(" ");
+	private String[] command8Secondary = ("DO SELECT SWITCH " + id + " PATH SECONDARY").split(" ");
+	
+	private String[] command28 = ("CREATE STOCK CAR " + id + " AS BOX").split(" ");
+	private String[] command29 = ("CREATE STOCK CAR " + id + " AS CABOOSE").split(" ");
+	private String[] command30 = ("CREATE STOCK CAR " + id + " AS FLATBED").split(" ");
+	private String[] command31 = ("CREATE STOCK CAR " + id + " AS PASSENGER").split(" ");
+	private String[] command32 = ("CREATE STOCK CAR " + id + " AS TANK").split(" ");
+	private String[] command33 = ("CREATE STOCK CAR " + id + " AS TENDER").split(" ");
+	private String[] command34StartStart = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM START FACING START").split(" ");
+	private String[] command34StartEnd = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM START FACING END").split(" ");
+	private String[] command34EndStart = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM END FACING START").split(" ");
+	private String[] command34EndEnd = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM END FACING END").split(" ");
+	
+	private String[] command39 = ("CREATE TRACK BRIDGE " + id1 + " REFERENCE " + coordinates_world + " | '$' " + id2 + " DELTA START " + coordinates_delta1 + " END " + coordinates_delta2).split(" ");
+	
 	private String[] command61 = ("COUPLE STOCK " + id1 + "AND " + id2).split(" ");
-	private String[] command62 = ("LOCATE STOCK " + id1 + "ON TRACK " + id2 +  "DISTANCE " + number + "FROM ( START | END ) ").split(" ");
+	private String[] command62Start = ("LOCATE STOCK " + id1 + " ON TRACK " + id2 +  " DISTANCE " + number + " FROM START").split(" ");
+	private String[] command62End = ("LOCATE STOCK " + id1 + " ON TRACK " + id2 +  " DISTANCE " + number + " FROM END").split(" ");
 	
 	public CommandParser(MyParserHelper parserHelper, String commandText)
 	{
@@ -64,7 +74,7 @@ public class CommandParser
 	
 	public void parse()
 	{
-		if (this.commandText.equalsIgnoreCase("@exit"))
+		if (this.commandText.equalsIgnoreCase("@EXIT"))
 		{
 			A_Command command = new CommandMetaDoExit();
 			this.parserHelper.getActionProcessor().schedule(command);
@@ -73,28 +83,28 @@ public class CommandParser
 		//COMMAND 2
 		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command2)))
 		{
-			A_Command command = new CommandBehavioralBrake(id);//id should be the last part of the commandText string
+			A_Command command = new CommandBehavioralBrake(id);
 			this.parserHelper.getActionProcessor().schedule(command);
 		}
 		
 		//COMMAND 6
-		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command6)))
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command6Up)) | this.commandText.equalsIgnoreCase(Arrays.toString(command6Down)))
 		{
-			A_Command command = new CommandBehavioralSelectBridge(position, true);//position should be either up or down(whichever is provided in commandText)
-			this.parserHelper.getActionProcessor().schedule(command);			  //boolean is isUpElseDown
+			A_Command command = new CommandBehavioralSelectBridge(position, isUpElseDown);
+			this.parserHelper.getActionProcessor().schedule(command);			  
 		}
 		
 		//COMMAND 7
-		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command7)))
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command7Clockwise)) | this.commandText.equalsIgnoreCase(Arrays.toString(command7CounterClockwise)))
 		{
-			A_Command command = new CommandBehavioralSelectRoundhouse(commandText, null, false);// string is the id of the roundhouse, angle is which angle in degrees it will turn
-			this.parserHelper.getActionProcessor().schedule(command);							//boolean will be isClockwise
+			A_Command command = new CommandBehavioralSelectRoundhouse(commandText, angle, isClockwise);
+			this.parserHelper.getActionProcessor().schedule(command);							
 		}
 		
 		//COMMAND 8
-		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command8)))
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command8Primary)) | this.commandText.equalsIgnoreCase(Arrays.toString(command8Secondary)))
 		{
-			A_Command command = new CommandBehavioralSelectSwitch(commandText, false);// the id of the path and the boolean should be isPrimaryElseSecondary
+			A_Command command = new CommandBehavioralSelectSwitch(commandText, false);
 			this.parserHelper.getActionProcessor().schedule(command);
 		}
 		
@@ -103,6 +113,7 @@ public class CommandParser
 		{
 			A_Command command = new CommandCreateStockCarBox(id);
 			this.parserHelper.getActionProcessor().schedule(command);
+			
 		}
 		
 		//COMMAND 29
@@ -141,7 +152,7 @@ public class CommandParser
 		}
 		
 		//COMMAND 34
-		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command34)))
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command34StartStart)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34StartEnd)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34EndStart)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34EndEnd)))
 		{
 			A_Command command = new CommandCreateStockEngineDiesel(id,trackLocator, isFacingStartElseEnd);
 			this.parserHelper.getActionProcessor().schedule(command);
@@ -162,7 +173,7 @@ public class CommandParser
 		}
 
 		//COMMAND 62
-		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command62)))
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command62Start)) | this.commandText.equalsIgnoreCase(Arrays.toString(command62End)))
 		{
 			A_Command command = new CommandStructuralLocate(id, trackLocator);
 			this.parserHelper.getActionProcessor().schedule(command);
