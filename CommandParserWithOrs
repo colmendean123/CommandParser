@@ -95,71 +95,71 @@ public class CommandParser {
     //need to go back and add $ 
 	String[] x=("Do Break "+id).split(" ");  
 	//40
-	String[] command40a=("CREATE TRACK BRIDGE "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command40a=("CREATE TRACK BRIDGE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	//40
-	String[] command40b=("CREATE TRACK BRIDGE "+id1+"REFERENCE "+coordinates_world+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command40b=("CREATE TRACK BRIDGE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	//41a
-	String[] command41a=("CREATE TRACK CROSSING "+id1+"REFERENCE "+coordinates_world+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command41a=("CREATE TRACK CROSSING "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	//41b
-	String[] command41b=("CREATE TRACK CROSSING "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command41b=("CREATE TRACK CROSSING "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	//42a
-	String[] command42a=("CREATE TRACK CROSSOVER "+id1+"REFERENCE "+coordinates_world+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"START "+coordinates_delta3+"END "+coordinates_delta4).split(" ");
+	String[] command42a=("CREATE TRACK CROSSOVER "+id1+" REFERENCE "+coordinates_world+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" START "+coordinates_delta3+" END "+coordinates_delta4).split(" ");
 	//42b
-    String[] command42b=("CREATE TRACK CROSSOVER "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"START "+coordinates_delta3+"END "+coordinates_delta4).split(" ");
+    String[] command42b=("CREATE TRACK CROSSOVER "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" START "+coordinates_delta3+" END "+coordinates_delta4).split(" ");
     //44a
-	String[] command44a=("CREATE TRACK "+id1+"REFERENCE "+coordinates_world+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command44a=("CREATE TRACK "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	//44b
-	String[] command44b=("CREATE TRACK "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+	String[] command44b=("CREATE TRACK "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
 	
 	//43a
-	    String[] command43a=("CREATE TRACK CURVE "+id1+"REFERENCE "+coordinates_world+"DELTA START "+coordinates_delta1+"END"+coordinates_delta2+"DISTANCE ORIGIN "+number).split(" ");
+	    String[] command43a=("CREATE TRACK CURVE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+number).split(" ");
 	//43b
-	    String[] command43b=("CREATE TRACK CURVE "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END"+coordinates_delta2+"DISTANCE ORIGIN "+number).split(" ");
+	    String[] command43b=("CREATE TRACK CURVE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+number).split(" ");
 	//43c
-	    String[] command43c=("CREATE TRACK CURVE "+id1+"REFERENCE "+coordinates_world+"DELTA START "+coordinates_delta1+"END"+coordinates_delta2+"DISTANCE ORIGIN "+coordinates_delta3).split(" ");
+	    String[] command43c=("CREATE TRACK CURVE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+coordinates_delta3).split(" ");
 	//43d
-	    String[] command43d=("CREATE TRACK CURVE "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END"+coordinates_delta2+"DISTANCE ORIGIN "+coordinates_delta3).split(" ");
+	    String[] command43d=("CREATE TRACK CURVE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+coordinates_delta3).split(" ");
     //45
-        String[] command45=("CREATE TRACK LAYOUT "+id1+"WITH TRACKS "+idn+"+").split(" ");
+        String[] command45=("CREATE TRACK LAYOUT "+id1+" WITH TRACKS "+idn+"+").split(" ");
     //46a ,
-        String[] command46a=("CREATE TRACK ROUNDHOUSE "+id1+"REFERENCE "+coordinates_world+"DELTA ORIGIN "+coordinates_delta1+"ANGLE ENTRY "+angle1+"START "+angle2+"END "+angle3+"WITH "+integer+"SPURS LENGTH "+number1+"TURNTABLE LENGTH "+number2).split(" ");
+        String[] command46a=("CREATE TRACK ROUNDHOUSE "+id1+" REFERENCE "+coordinates_world+" DELTA ORIGIN "+coordinates_delta1+" ANGLE ENTRY "+angle1+" START "+angle2+" END "+angle3+"WITH "+integer+" SPURS LENGTH "+number1+" TURNTABLE LENGTH "+number2).split(" ");
     //46b ,
-        String[] command46b=("CREATE TRACK ROUNDHOUSE "+id1+"REFERENCE "+"'$' "+id2+"DELTA ORIGIN "+coordinates_delta1+"ANGLE ENTRY "+angle1+"START "+angle2+"END "+angle3+"WITH "+integer+"SPURS LENGTH "+number1+"TURNTABLE LENGTH "+number2).split(" ");
+        String[] command46b=("CREATE TRACK ROUNDHOUSE "+id1+" REFERENCE "+"'$' "+id2+" DELTA ORIGIN "+coordinates_delta1+" ANGLE ENTRY "+angle1+" START "+angle2+" END "+angle3+" WITH "+integer+" SPURS LENGTH "+number1+" TURNTABLE LENGTH "+number2).split(" ");
     //47a ,
-        String[] command47a=("CREATE TRACK STRAIGHT "+id1+"REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+        String[] command47a=("CREATE TRACK STRAIGHT "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
     //47b ,
-        String[] command47b=("CREATE TRACK STRAIGHT "+id1+"REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+"END "+coordinates_delta2).split(" ");
+        String[] command47b=("CREATE TRACK STRAIGHT "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
     //48a,
-        String[] command48a=("CREATE TRACK SWITCH TURNOUT "+id1+"REFERENCE "+coordinates_world+" STRAIGHT DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"CURVE DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN "+number).split(" ");
+        String[] command48a=("CREATE TRACK SWITCH TURNOUT "+id1+" REFERENCE "+coordinates_world+" STRAIGHT DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" CURVE DELTA START "+coordinates_delta3+" END "+coordinates_delta4+" DISTANCE ORIGIN "+number).split(" ");
     //48b,
-        String[] command48b=("CREATE TRACK SWITCH TURNOUT "+id1+"REFERENCE "+"'$' "+id2+"STRAIGHT DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"CURVE DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN "+number).split(" ");    
+        String[] command48b=("CREATE TRACK SWITCH TURNOUT "+id1+" REFERENCE "+"'$' "+id2+" STRAIGHT DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" CURVE DELTA START "+coordinates_delta3+" END "+coordinates_delta4+" DISTANCE ORIGIN "+number).split(" ");    
    //49a
-        String[] command49a=("CREATE TRACK SWITCH WYE "+id1+"REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
+        String[] command49a=("CREATE TRACK SWITCH WYE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
    //49b
-        String[] command49b=("CREATE TRACK SWITCH WYE "+id1+"REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
+        String[] command49b=("CREATE TRACK SWITCH WYE "+id1+" REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
   
 	//22 
-	    String[] command22=("CREATE POWER CATENARY "+id1+"WITH POLES "+idn+"+").split(" ");
+	    String[] command22=("CREATE POWER CATENARY "+id1+" WITH POLES "+idn+"+").split(" ");
 	
 	//23a
-	    String[] command23a=("CREATE POWER POLE "+id1+"ON TRACK "+id2+"DISTANCE "+number+"FROM "+"START").split(" ");
+	    String[] command23a=("CREATE POWER POLE "+id1+" ON TRACK "+id2+" DISTANCE "+number+" FROM "+"START").split(" ");
 	//23b    
-	    String[] command23b=("CREATE POWER POLE "+id1+"ON TRACK "+id2+"DISTANCE "+number+"FROM "+"END").split(" ");
+	    String[] command23b=("CREATE POWER POLE "+id1+" ON TRACK "+id2+" DISTANCE "+number+" FROM "+"END").split(" ");
 	  
 	
     //24a
-	    String[] command24a=("CREATE POWER STATION "+id1+"REFERENCE "+coordinates_world+"DELTA "+coordinates_delta+"WITH SUBSTATION").split(" ");
-	    String[] command24b=("CREATE POWER STATION "+id1+"REFERENCE "+"'$' "+id2+"DELTA "+coordinates_delta+"WITH SUBSTATION").split(" ");
-	    String[] command24c=("CREATE POWER STATION "+id1+"REFERENCE "+coordinates_world+"DELTA "+coordinates_delta+"WITH SUBSTATIONS").split(" ");
-	    String[] command24d=("CREATE POWER STATION "+id1+"REFERENCE "+"'$' "+id2+"DELTA "+coordinates_delta+"WITH SUBSTATIONS").split(" ");
+	    String[] command24a=("CREATE POWER STATION "+id1+" REFERENCE "+coordinates_world+" DELTA "+coordinates_delta+" WITH SUBSTATION").split(" ");
+	    String[] command24b=("CREATE POWER STATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH SUBSTATION").split(" ");
+	    String[] command24c=("CREATE POWER STATION "+id1+" REFERENCE "+coordinates_world+" DELTA "+coordinates_delta+" WITH SUBSTATIONS").split(" ");
+	    String[] command24d=("CREATE POWER STATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH SUBSTATIONS").split(" ");
 	//25a
-	    String[] command25a=("CREATE POWER SUBSTATION "+id1+"REFERENCE "+"'$' "+id2+"DELTA "+coordinates_delta+"WITH CATENARIES "+idn+"+").split(" "); 
+	    String[] command25a=("CREATE POWER SUBSTATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH CATENARIES "+idn+"+").split(" "); 
 	//25b
-	    String[] command25b=("CREATE POWER SUBSTATION "+id1+"REFERENCE "+ coordinates_world+"DELTA "+coordinates_delta+"WITH CATENARIES "+idn+"+").split(" "); 
+	    String[] command25b=("CREATE POWER SUBSTATION "+id1+" REFERENCE "+ coordinates_world+" DELTA "+coordinates_delta+" WITH CATENARIES "+idn+"+").split(" "); 
 	//65
-	    String[] command65=("UNCOUPLE STOCK "+id1+"AND "+id2).split(" ");
+	    String[] command65=("UNCOUPLE STOCK "+id1+" AND "+id2).split(" ");
 	//66
-	    String[] command66=("USE "+id+"AS REFERENCE "+coordinates_world).split(" ");
+	    String[] command66=("USE "+id+" AS REFERENCE "+coordinates_world).split(" ");
 	//67
 	    String[] command67=("Rule#2 through Rule#65").split(" ");
 	    if(this.commandText.equals("COMMIT")) {
@@ -200,7 +200,7 @@ public class CommandParser {
 	    	this.parserHelper.getActionProcessor().schedule(command);
 	    }
 
-	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command24a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24b))) {
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command24a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24b)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24c)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24d)) ) {
 	    	A_Command command=new CommandCreatePowerStation(id, coordinates_world, coordinates_delta1, idSubstations);
 	    	this.parserHelper.getActionProcessor().schedule(command);
 	    }
