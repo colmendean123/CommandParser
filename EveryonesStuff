@@ -1,0 +1,573 @@
+package cs350f20project.controller.cli.parser;
+
+
+
+import java.awt.List;
+import java.util.Arrays;
+import java.util.LinkedList;
+
+import cs350f20project.controller.ActionProcessor;
+import cs350f20project.controller.cli.TrackLocator;
+import cs350f20project.controller.command.A_Command;
+import cs350f20project.controller.command.PointLocator;
+import cs350f20project.controller.command.behavioral.CommandBehavioralBrake;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSelectBridge;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSelectRoundhouse;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSelectSwitch;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSetDirection;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSetReference;
+import cs350f20project.controller.command.behavioral.CommandBehavioralSetSpeed;
+import cs350f20project.controller.command.creational.CommandCreatePowerCatenary;
+import cs350f20project.controller.command.creational.CommandCreatePowerPole;
+import cs350f20project.controller.command.creational.CommandCreatePowerStation;
+import cs350f20project.controller.command.creational.CommandCreateStockCarBox;
+import cs350f20project.controller.command.creational.CommandCreateStockCarCaboose;
+import cs350f20project.controller.command.creational.CommandCreateStockCarFlatbed;
+import cs350f20project.controller.command.creational.CommandCreateStockCarPassenger;
+import cs350f20project.controller.command.creational.CommandCreateStockCarTank;
+import cs350f20project.controller.command.creational.CommandCreateStockCarTender;
+import cs350f20project.controller.command.creational.CommandCreateStockEngineDiesel;
+import cs350f20project.controller.command.creational.CommandCreateTrackBridgeDraw;
+import cs350f20project.controller.command.creational.CommandCreateTrackBridgeFixed;
+import cs350f20project.controller.command.creational.CommandCreateTrackCrossing;
+import cs350f20project.controller.command.creational.CommandCreateTrackCrossover;
+import cs350f20project.controller.command.creational.CommandCreateTrackCurve;
+import cs350f20project.controller.command.creational.CommandCreateTrackEnd;
+import cs350f20project.controller.command.creational.CommandCreateTrackLayout;
+import cs350f20project.controller.command.creational.CommandCreateTrackRoundhouse;
+import cs350f20project.controller.command.creational.CommandCreateTrackStraight;
+import cs350f20project.controller.command.creational.CommandCreateTrackSwitchTurnout;
+import cs350f20project.controller.command.creational.CommandCreateTrackSwitchWye;
+import cs350f20project.controller.command.meta.CommandMetaDoExit;
+import cs350f20project.controller.command.meta.CommandMetaViewDestroy;
+import cs350f20project.controller.command.structural.CommandStructuralCommit;
+import cs350f20project.controller.command.structural.CommandStructuralCouple;
+import cs350f20project.controller.command.structural.CommandStructuralLocate;
+import cs350f20project.controller.command.structural.CommandStructuralUncouple;
+import cs350f20project.datatype.Angle;
+import cs350f20project.datatype.CoordinatesDelta;
+import cs350f20project.datatype.CoordinatesWorld;
+import cs350f20project.datatype.Latitude;
+import cs350f20project.datatype.Longitude;
+
+public class CommandParser {
+ 
+  //private CoordinatesDelta deltaOrigin=new CoordinatesDelta(1,1);
+  
+  private LinkedList<String> idSubstations=new LinkedList<>();
+  private boolean isClockwise, isUpElseDown;
+  private PointLocator pointLocator;
+  private Angle angle;
+  private Angle angle3;
+  private Angle angle1;
+  private Angle angle2;
+  private CoordinatesDelta coordinates_deltaE;    //2end
+  private CoordinatesDelta coordinates_delta;     //2origins
+  private CoordinatesDelta coordinates_delta3;
+  private String id1;
+  private String idn;
+  private String id2;
+  public  String id;
+  private int integer;
+  private Latitude latitude;
+  private String string;
+  private Longitude longitude;
+  private CoordinatesDelta coordinates_delta1;
+  private CoordinatesDelta coordinates_delta2;
+  private double number1;
+  private double number2;
+  private CoordinatesDelta coordinates_delta4;
+  private CoordinatesWorld coordinates_world;
+  private double number=1;
+  private double real;
+  private TrackLocator START;
+  private TrackLocator STOP;
+  private String commandText;
+  private MyParserHelper parserHelper;
+  private CommandParserTokenManager tm;
+  private PointLocator locater;
+  private String position;
+  private boolean isFacingStartElseEnd;
+  private ActionProcessor actionProcessor;
+  private LinkedList<String> idpoles;
+  private LinkedList<String> trackIDs;
+  private TrackLocator trackLocator;
+  private String[] command2 = ("DO BRAKE " + id).split(" ");
+  private String[] command6Up = ("DO SELECT DRAWBRIDGE " + id + " POSITION UP").split(" ");
+	private String[] command6Down = ("DO SELECT DRAWBRIDGE " + id + " POSITION DOWN").split(" ");
+	private String[] command7Clockwise = ("DO SELECT ROUNDHOUSE " + id + " POSITION " + angle + " CLOCKWISE").split(" ");
+	private String[] command7CounterClockwise = ("DO SELECT ROUNDHOUSE " + id + " POSITION " + angle + " COUNTERCLOCKWISE").split(" ");
+	private String[] command8Primary = ("DO SELECT SWITCH " + id + " PATH PRIMARY").split(" ");
+	private String[] command8Secondary = ("DO SELECT SWITCH " + id + " PATH SECONDARY").split(" ");
+	
+	private String[] command28 = ("CREATE STOCK CAR " + id + " AS BOX").split(" ");
+	private String[] command29 = ("CREATE STOCK CAR " + id + " AS CABOOSE").split(" ");
+	private String[] command30 = ("CREATE STOCK CAR " + id + " AS FLATBED").split(" ");
+	private String[] command31 = ("CREATE STOCK CAR " + id + " AS PASSENGER").split(" ");
+	private String[] command32 = ("CREATE STOCK CAR " + id + " AS TANK").split(" ");
+	private String[] command33 = ("CREATE STOCK CAR " + id + " AS TENDER").split(" ");
+	private String[] command34StartStart = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM START FACING START").split(" ");
+	private String[] command34StartEnd = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM START FACING END").split(" ");
+	private String[] command34EndStart = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM END FACING START").split(" ");
+	private String[] command34EndEnd = ("CREATE STOCK ENGINE " + id1 + " AS DIESEL ON TRACK " + id2 + " DISTANCE " + number + " FROM END FACING END").split(" ");
+	private String[] command61 = ("COUPLE STOCK " + id1 + "AND " + id2).split(" ");
+	private String[] command62Start = ("LOCATE STOCK " + id1 + " ON TRACK " + id2 +  " DISTANCE " + number + " FROM START").split(" ");
+	private String[] command62End = ("LOCATE STOCK " + id1 + " ON TRACK " + id2 +  " DISTANCE " + number + " FROM END").split(" ");
+	private String[] command39 = ("CREATE TRACK BRIDGE " + id1 + " REFERENCE " + coordinates_world + " | '$' " + id2 + " DELTA START " + coordinates_delta1 + " END " + coordinates_delta2).split(" ");
+	//40
+	private	String[] command40a=("CREATE TRACK BRIDGE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+		//40
+	private	String[] command40b=("CREATE TRACK BRIDGE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+		//41a
+	private	String[] command41a=("CREATE TRACK CROSSING "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+		//41b
+	private	String[] command41b=("CREATE TRACK CROSSING "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+		//42a
+	private	String[] command42a=("CREATE TRACK CROSSOVER "+id1+" REFERENCE "+coordinates_world+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" START "+coordinates_delta3+" END "+coordinates_delta4).split(" ");
+		//42b
+	private    String[] command42b=("CREATE TRACK CROSSOVER "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" START "+coordinates_delta3+" END "+coordinates_delta4).split(" ");
+	    //44a
+	private	String[] command44a=("CREATE TRACK "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+		//44b
+	private	String[] command44b=("CREATE TRACK "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+	//43a
+    private String[] command43a=("CREATE TRACK CURVE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+number).split(" ");
+//43b
+    private String[] command43b=("CREATE TRACK CURVE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+number).split(" ");
+//43c
+    private String[] command43c=("CREATE TRACK CURVE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+coordinates_delta3).split(" ");
+//43d
+    private String[] command43d=("CREATE TRACK CURVE "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" DISTANCE ORIGIN "+coordinates_delta3).split(" ");
+//45
+    private String[] command45=("CREATE TRACK LAYOUT "+id1+" WITH TRACKS "+idn+"+").split(" ");
+//46a ,
+    private String[] command46a=("CREATE TRACK ROUNDHOUSE "+id1+" REFERENCE "+coordinates_world+" DELTA ORIGIN "+coordinates_delta1+" ANGLE ENTRY "+angle1+" START "+angle2+" END "+angle3+"WITH "+integer+" SPURS LENGTH "+number1+" TURNTABLE LENGTH "+number2).split(" ");
+//46b ,
+    private String[] command46b=("CREATE TRACK ROUNDHOUSE "+id1+" REFERENCE "+"'$' "+id2+" DELTA ORIGIN "+coordinates_delta1+" ANGLE ENTRY "+angle1+" START "+angle2+" END "+angle3+" WITH "+integer+" SPURS LENGTH "+number1+" TURNTABLE LENGTH "+number2).split(" ");
+//47a ,
+    private String[] command47a=("CREATE TRACK STRAIGHT "+id1+" REFERENCE "+"'$' "+id2+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+//47b ,
+    private String[] command47b=("CREATE TRACK STRAIGHT "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+" END "+coordinates_delta2).split(" ");
+//48a,
+    private String[] command48a=("CREATE TRACK SWITCH TURNOUT "+id1+" REFERENCE "+coordinates_world+" STRAIGHT DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" CURVE DELTA START "+coordinates_delta3+" END "+coordinates_delta4+" DISTANCE ORIGIN "+number).split(" ");
+//48b,
+    private String[] command48b=("CREATE TRACK SWITCH TURNOUT "+id1+" REFERENCE "+"'$' "+id2+" STRAIGHT DELTA START "+coordinates_delta1+" END "+coordinates_delta2+" CURVE DELTA START "+coordinates_delta3+" END "+coordinates_delta4+" DISTANCE ORIGIN "+number).split(" ");    
+//49a
+    private String[] command49a=("CREATE TRACK SWITCH WYE "+id1+" REFERENCE "+coordinates_world+" DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
+//49b
+    private String[] command49b=("CREATE TRACK SWITCH WYE "+id1+" REFERENCE "+"'$' "+id2+"DELTA START "+coordinates_delta1+"END "+coordinates_delta2+"DISTANCE ORIGIN "+number1+"DELTA START "+coordinates_delta3+"END "+coordinates_delta4+"DISTANCE ORIGIN"+number2).split(" ");
+
+//22 
+    private String[] command22=("CREATE POWER CATENARY "+id1+" WITH POLES "+idn+"+").split(" ");
+
+//23a
+    private String[] command23a=("CREATE POWER POLE "+id1+" ON TRACK "+id2+" DISTANCE "+number+" FROM "+"START").split(" ");
+//23b    
+    private String[] command23b=("CREATE POWER POLE "+id1+" ON TRACK "+id2+" DISTANCE "+number+" FROM "+"END").split(" ");
+  
+
+//24a
+    private String[] command24a=("CREATE POWER STATION "+id1+" REFERENCE "+coordinates_world+" DELTA "+coordinates_delta+" WITH SUBSTATION").split(" ");
+    private String[] command24b=("CREATE POWER STATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH SUBSTATION").split(" ");
+    private String[] command24c=("CREATE POWER STATION "+id1+" REFERENCE "+coordinates_world+" DELTA "+coordinates_delta+" WITH SUBSTATIONS").split(" ");
+    private String[] command24d=("CREATE POWER STATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH SUBSTATIONS").split(" ");
+//25a
+    private String[] command25a=("CREATE POWER SUBSTATION "+id1+" REFERENCE "+"'$' "+id2+" DELTA "+coordinates_delta+" WITH CATENARIES "+idn+"+").split(" "); 
+//25b
+    private String[] command25b=("CREATE POWER SUBSTATION "+id1+" REFERENCE "+ coordinates_world+" DELTA "+coordinates_delta+" WITH CATENARIES "+idn+"+").split(" "); 
+//65
+    private String[] command65=("UNCOUPLE STOCK "+id1+" AND "+id2).split(" ");
+//66
+    private String[] command66=("USE "+id+" AS REFERENCE "+coordinates_world).split(" ");
+//67
+    private String[] command67=("Rule#2 through Rule#65").split(" ");	
+    
+	private String[] command11a =("DO SET id DIRECTION " + id + " FORWARD").split(" ");
+	private String[] command11b =("DO SET id DIRECTION " + id + " BACKWARD").split(" ");
+	private String [] command12 =("DO SET REFERENCE ENGINE " + id).split(" ");
+	private String[] command15 = ("DO SET id SPEED number" + id).split(" ");
+	public CommandParser(MyParserHelper parserHelper, String commandText){
+		this.parserHelper=parserHelper;
+		this.commandText=commandText;
+	}
+	
+	public CommandParser(CommandParserTokenManager tm) {
+		this.tm=tm;
+	}
+	public void parse() {
+       
+	            
+	
+	
+	
+	
+	    if(this.commandText.equals("COMMIT")) {
+	    	A_Command command=new CommandStructuralCommit();
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if (this.commandText.equalsIgnoreCase(Arrays.toString(command2)))
+		{
+			A_Command command = new CommandBehavioralBrake(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 6
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command6Up)) | this.commandText.equalsIgnoreCase(Arrays.toString(command6Down)))
+		{
+			A_Command command = new CommandBehavioralSelectBridge(position, isUpElseDown);
+			this.parserHelper.getActionProcessor().schedule(command);			  
+		}
+		
+		//COMMAND 7
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command7Clockwise)) | this.commandText.equalsIgnoreCase(Arrays.toString(command7CounterClockwise)))
+		{
+			A_Command command = new CommandBehavioralSelectRoundhouse(commandText, angle, isClockwise);
+			this.parserHelper.getActionProcessor().schedule(command);							
+		}
+		
+		//COMMAND 8
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command8Primary)) | this.commandText.equalsIgnoreCase(Arrays.toString(command8Secondary)))
+		{
+			A_Command command = new CommandBehavioralSelectSwitch(commandText, false);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+	    //11a
+           else if(this.commandText.equalsIgnoreCase(Arrays.toString(command11a))){
+			
+			A_Command command = new  CommandBehavioralSetDirection(commandText,false);	
+			this.parserHelper.getActionProcessor().schedule(command);
+		
+		}
+	    //11b
+           else if(this.commandText.equalsIgnoreCase(Arrays.toString(command11b))){
+   			
+   		      
+   			A_Command command = new  CommandBehavioralSetDirection(commandText,false);	
+   			this.parserHelper.getActionProcessor().schedule(command);
+   		
+   		}
+	    //12
+           else if(this.commandText.equalsIgnoreCase(Arrays.toString(command12))){
+       		
+   			A_Command command = new  CommandBehavioralSetReference(commandText);	//check variables
+   			this.parserHelper.getActionProcessor().schedule(command);
+   		}
+           else if(this.commandText.equalsIgnoreCase(Arrays.toString(command15))){
+   			
+   			A_Command command = new CommandBehavioralSetSpeed(id, number);//check passed in variables 
+   			this.parserHelper.getActionProcessor().schedule(command);
+   		}
+	  //command 55
+   		else if(this.commandText.equalsIgnoreCase("CLOSE view id")) {
+   			
+   			A_Command command = new CommandMetaViewDestroy(id); 
+   			this.parserHelper.getActionProcessor().schedule(command);
+   		}
+	    
+		//COMMAND 28
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command28)))
+		{
+			A_Command command = new CommandCreateStockCarBox(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+			
+		}
+		
+		//COMMAND 29
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command29)))
+		{
+			A_Command command = new CommandCreateStockCarCaboose(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 30
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command30)))
+		{
+			A_Command command = new CommandCreateStockCarFlatbed(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 31
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command31)))
+		{
+			A_Command command = new CommandCreateStockCarPassenger(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 32
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command32)))
+		{
+			A_Command command = new CommandCreateStockCarTank(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 33
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command33)))
+		{
+			A_Command command = new CommandCreateStockCarTender(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 34
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command34StartStart)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34StartEnd)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34EndStart)) | this.commandText.equalsIgnoreCase(Arrays.toString(command34EndEnd)))
+		{
+			A_Command command = new CommandCreateStockEngineDiesel(id,trackLocator, isFacingStartElseEnd);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 39
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command39)))
+		{
+			A_Command command = new CommandCreateTrackBridgeDraw(id, pointLocator, angle);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+		
+		//COMMAND 61
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command61)))
+		{
+			A_Command command = new CommandStructuralCouple(id, id1);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+
+		//COMMAND 62
+		else if (this.commandText.equalsIgnoreCase(Arrays.toString(command62Start)) | this.commandText.equalsIgnoreCase(Arrays.toString(command62End)))
+		{
+			A_Command command = new CommandStructuralLocate(id, trackLocator);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+	    else if (this.commandText.equalsIgnoreCase(Arrays.toString(command2)))
+		{
+			A_Command command = new CommandBehavioralBrake(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+		}
+	   
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command44a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command44b))) {              //44
+	    	//
+	    	A_Command command=new CommandCreateTrackEnd(id, locater);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    	//System.out.println(Arrays.toString(command44));
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command43a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command43b))) {
+		  
+		    	A_Command command=new CommandCreateTrackCurve(id, coordinates_world, coordinates_delta1, coordinates_delta2, number);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		    }
+		    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command43c)) || this.commandText.equalsIgnoreCase(Arrays.toString(command43d))) {
+		    	A_Command command=new CommandCreateTrackCurve(id, coordinates_world, coordinates_delta1, coordinates_delta2, coordinates_delta3);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+
+		    }
+
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command22))) {
+	    	A_Command command=new CommandCreatePowerCatenary(id, idpoles);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command23a))||this.commandText.equalsIgnoreCase(Arrays.toString(command23b))) {
+	    	A_Command command=new CommandCreatePowerPole(id, START);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command24a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24b)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24c)) || this.commandText.equalsIgnoreCase(Arrays.toString(command24d)) ) {
+	    	A_Command command=new CommandCreatePowerStation(id, coordinates_world, coordinates_delta1, idSubstations);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command25a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command25b))) {
+	    	A_Command command=new CommandCreatePowerStation(id, coordinates_world, coordinates_delta, idSubstations);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command42a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command42b))) {
+	    	A_Command command=new CommandCreateTrackCrossover(id, coordinates_world, coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command41a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command41b))) {
+	    	A_Command command=new CommandCreateTrackCrossing(id, locater);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command40a))||this.commandText.equalsIgnoreCase(Arrays.toString(command40b))) {
+	    	A_Command command=new CommandCreateTrackBridgeFixed(id, locater);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command45))) {
+	    	A_Command command=new CommandCreateTrackLayout(id,trackIDs);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command46a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command46b))) {
+	    	A_Command command=new CommandCreateTrackRoundhouse(id, coordinates_world, coordinates_delta1, angle1, angle2, angle3,integer,number1,number2 );
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command47a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command47b))) {
+	    	A_Command command=new CommandCreateTrackStraight(id, locater);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command48a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command48b))) {
+	    	A_Command command =new CommandCreateTrackSwitchTurnout(id, coordinates_world,coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4, coordinates_delta);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command49a)) || this.commandText.equalsIgnoreCase(Arrays.toString(command49b))) {
+	    	A_Command command =new CommandCreateTrackSwitchWye(id, coordinates_world, coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4,coordinates_deltaE,coordinates_delta);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command65))){
+	    	A_Command command=new CommandStructuralUncouple(id1, id2);
+	    	this.parserHelper.getActionProcessor().schedule(command);
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command66))) {
+	    	parserHelper.addReference(id, coordinates_world);
+	    	
+	    }
+	    else if(this.commandText.equalsIgnoreCase(Arrays.toString(command67))) {
+	    	//Command2
+	    	A_Command command = new CommandBehavioralBrake(id);
+			this.parserHelper.getActionProcessor().schedule(command);
+			//Command6
+			 command = new CommandBehavioralSelectBridge(position, true);
+			this.parserHelper.getActionProcessor().schedule(command);
+		   //Command7
+		     command = new CommandBehavioralSelectRoundhouse(commandText, null, false);
+		     this.parserHelper.getActionProcessor().schedule(command);
+		   //Command8
+		     command = new CommandBehavioralSelectSwitch(commandText, false);
+		     this.parserHelper.getActionProcessor().schedule(command);
+		   //Command22
+		     command=new CommandCreatePowerCatenary(id, idpoles);
+		     this.parserHelper.getActionProcessor().schedule(command);
+		   //Command23
+		     command=new CommandCreatePowerPole(id, START);
+		     this.parserHelper.getActionProcessor().schedule(command);
+		   //Command24
+		        command=new CommandCreatePowerStation(id, coordinates_world, coordinates_delta1, idSubstations);
+		     	this.parserHelper.getActionProcessor().schedule(command);
+		   //Command25
+		     	command=new CommandCreatePowerStation(id, coordinates_world, coordinates_delta, idSubstations);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 28 	
+		    	command = new CommandCreateStockCarBox(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 29
+				command = new CommandCreateStockCarCaboose(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND30
+				command = new CommandCreateStockCarFlatbed(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 31
+				command = new CommandCreateStockCarPassenger(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 32
+				command = new CommandCreateStockCarTank(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 33
+				command = new CommandCreateStockCarTender(id);
+				this.parserHelper.getActionProcessor().schedule(command);
+		   //COMMAND 34
+				command = new CommandCreateStockEngineDiesel(id,trackLocator, isFacingStartElseEnd);
+				this.parserHelper.getActionProcessor().schedule(command);
+		  //COMMAND40
+				command=new CommandCreateTrackBridgeFixed(id, locater);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //Command41
+		    	command=new CommandCreateTrackCrossing(id, locater);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //Command42
+		    	command=new CommandCreateTrackCrossover(id, coordinates_world, coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //COMMAND43
+		    	command=new CommandCreateTrackCurve(id, coordinates_world, coordinates_delta1, coordinates_delta2, number);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //COMMAND44 
+		    	command=new CommandCreateTrackEnd(id, locater);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //COMMAND45
+		    	command=new CommandCreateTrackLayout(id,trackIDs);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		  //COMMAND46
+		    	command=new CommandCreateTrackRoundhouse(id, coordinates_world, coordinates_delta1, angle1, angle2, angle3,integer,number1,number2 );
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		 //COMMAND47
+		    	command=new CommandCreateTrackStraight(id, locater);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		 //COMMAND48
+		    	command =new CommandCreateTrackSwitchTurnout(id, coordinates_world,coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4, coordinates_delta);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		 //COMMAND49
+		    	command =new CommandCreateTrackSwitchWye(id, coordinates_world, coordinates_delta1, coordinates_delta2, coordinates_delta3, coordinates_delta4,coordinates_deltaE,coordinates_delta);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+		 //65
+		    	command=new CommandStructuralUncouple(id1, id2);
+		    	this.parserHelper.getActionProcessor().schedule(command);
+	    } 
+	        
+	}
+	public void setID(String id) {
+		this.id= id;
+	}
+	public void setID1(String id1) {
+		this.id1=id1;
+	}
+	public void setID2(String id2) {
+		this.id2=id2;
+	}
+	
+	public String getID() {
+		return this.id;
+	}
+	public String getID1() {
+		return this.getID1();
+	}
+	public String getID2() {
+		return this.getID2();
+	}
+	public void setCoordinatesDelta1(CoordinatesDelta d1) {
+		this.coordinates_delta=d1;
+	}
+	public void setCoordinatesDelta2(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
+	}
+	public void setCoordinatesDelta3(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
+	}
+	public void setCoordinatesDelta4(CoordinatesDelta d2) {
+		this.coordinates_delta2=d2;
+	}
+	public CoordinatesDelta getStartCoordinates() {
+		return this.coordinates_delta1;
+	}
+	public CoordinatesDelta getEndCoordinates() {
+		return this.coordinates_delta2;
+	}
+	public void setWorldCoordinates(CoordinatesWorld cw) {
+		this.coordinates_world=cw;
+	}
+	public CoordinatesWorld getWorldCoordinates() {
+		return this.coordinates_world;
+	}
+	public void setNumber(double num) {
+		this.number=num;
+	}
+	public double getNumber() {
+		return this.number;
+	}
+	public void setPoles(LinkedList p) {
+		this.idpoles=p;
+	}
+	public LinkedList getpoles() {
+		return this.idpoles;
+	}
+	
+	public String getId1() {
+		return this.id1;
+	}
+	public void setIDn(String idn) {
+		this.idn=idn;
+	}
+	public String getIdn() {
+		return idn;
+	}
+	public void setNumber1(double num) {
+		this.number1=num;
+	}
+	public void setNumber2(double num) {
+		this.number2=num;
+	}
+	public MyParserHelper getParser() {
+		return this.parserHelper;
+	}
+}
